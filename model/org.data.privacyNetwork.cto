@@ -1,0 +1,74 @@
+/**
+ * A hyperledger for data privacy management.
+ */
+
+namespace org.data.privacyNetwork
+
+asset Record identified by recordId {
+  o String recordId
+  o String firstName
+  o String lastName
+  --> DataManager authRoot
+  o Association[] associations
+}
+
+participant User identified by email {
+  o String email
+  o String firstName
+  o String lastName
+  o String organization
+}
+
+participant AssociatedEntity extends User {
+  --> Record[] students
+}
+
+participant DataManager extends User {
+}
+
+participant AuthorizedAssociator extends User {
+  /* Can be one of two types based on authorization */
+  o FullAuthority[] fullAuthorizations optional
+  o PushAuthority[] pushAuthorizations optional
+}
+
+participant DataUser extends User {
+  o Consent[] consents optional
+}
+
+transaction FullAuthority identified by fAuthId {
+  o String fAuthId
+  --> DataManager authRoot
+  --> AuthorizedAssociator authAssociator
+  o DateTime expirationDate
+}
+
+transaction Consent identified by consentId {
+  o String consentId
+  o Boolean consentGranted
+  --> DataUser user
+  --> Record student
+  o DateTime agreementDate
+  o DateTime expirationDate
+  o String[] fields optional
+}
+
+transaction Association identified by associationId {
+  o String associationId
+  o DateTime assignedDate
+  o DateTime expirationDate optional
+  --> AssociatedEntity guardian
+  --> Record student
+  --> AuthorizedAssociator associator
+}
+
+transaction PushAuthority identified by pAuthId {
+  o String pAuthId
+  o DateTime expirationDate
+  o String email
+  o String firstName
+  o String lastName
+  o String organization
+  --> AuthorizedAssociator initiator
+  --> DataManager authRoot
+}

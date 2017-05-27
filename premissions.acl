@@ -1,0 +1,11 @@
+/**
+ * Access control list.
+ */
+
+rule Default {
+    description: "Allow all participants access to all resources"
+    participant: "ANY"
+    operation: ALL
+    resource: "org.data.privacy.User"
+    action: ALLOW
+}
