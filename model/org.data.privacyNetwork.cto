@@ -9,7 +9,7 @@ asset Record identified by recordId {
   o String firstName
   o String lastName
   --> DataManager authRoot
-  o Association[] associations
+  o Association[] associations optional
 }
 
 participant User identified by email {
