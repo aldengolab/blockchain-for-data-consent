@@ -20,7 +20,7 @@ participant User identified by email {
 }
 
 participant AssociatedEntity extends User {
-  --> Record[] students
+  --> Record[] students optional
 }
 
 participant DataManager extends User {
@@ -69,6 +69,6 @@ transaction PushAuthority identified by pAuthId {
   o String firstName
   o String lastName
   o String organization
-  --> AuthorizedAssociator initiator
+  --> AuthorizedAssociator initiator optional
   --> DataManager authRoot
 }
