@@ -1,11 +1,19 @@
 /**
- * Access control list.
+ * Sample access control list.
  */
-
 rule Default {
-    description: "Allow all participants access to all resources"
-    participant: "ANY"
+    description: "Allow DataManagers access to all resources"
+    participant: "org.data.privacyNetwork.DataManager"
     operation: ALL
-    resource: "org.data.privacy.User"
+    resource: "org.data.privacyNetwork"
+    action: ALLOW
+}
+
+rule AccessAA {
+    description: "Allow AA with Full Access all access to AA but not to itself"
+    participant (p): "org.data.privacyNetwork.AuthorizedAgent"
+    operation: ALL
+    resource (r): "org.data.privacyNetwork.AuthorizedAgent"
+    condition: (p.fullAuthorizations.length > 0 && p.email != r.email)
     action: ALLOW
 }
