@@ -1,7 +1,7 @@
 /**
  * Blockchain for data privacy access control list.
  */
- 
+
 rule DM_Global {
     description: "Allow DataManagers access to all resources"
     participant: "org.data.privacyNetwork.DataManager"
@@ -62,6 +62,7 @@ rule DU_AA_Access {
     operation: UPDATE, CREATE, READ
     resource (r): "org.data.privacyNetwork.AuthorizedAgent"
     condition: (p.organization === r.organization)
+    action: ALLOW
 }
 
 rule AA_DU_Push {
