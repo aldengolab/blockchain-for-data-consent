@@ -49,6 +49,8 @@ transaction Consent identified by consentId {
   o Boolean consentGranted
   --> DataUser user
   --> Record student
+  --> AuthorizedAgent
+  --> AssociatedEntity
   o DateTime agreementDate
   o DateTime expirationDate
   o String[] fields optional
