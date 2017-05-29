@@ -10,11 +10,11 @@ rule Default {
 }
 
 rule FullAccessAA {
-    description: "Allow AA with Full Access all access to AA but not to itself"
+    description: "Allow AA with Full Access all access to AA it created but not to itself"
     participant (p): "org.data.privacyNetwork.AuthorizedAgent"
     operation: ALL
     resource (r): "org.data.privacyNetwork.AuthorizedAgent"
-    condition: (p.fullAuthorizations.length > 0 && p.email !== r.email)
+    condition: (p.fullAuthorizations.length > 0 && p.email !== r.email && p.organization === r.organization)
     action: ALLOW
 }
 
