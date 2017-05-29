@@ -57,12 +57,16 @@ transaction Association identified by associationId {
   o String associationId
   o DateTime assignedDate
   o DateTime expirationDate optional
-  --> AssociatedEntity guardian optional
+  --> AssociatedEntity guardian
   --> Record student
   --> AuthorizedAssociator associator
-  o String email optional
-  o String firstName optional
-  o String lastName optional
+}
+
+transaction CreateAE identified by createAEId {
+  o String createAEId
+  o String email
+  o String firstName
+  o String lastName
 }
 
 transaction PushAuthority identified by pAuthId {
