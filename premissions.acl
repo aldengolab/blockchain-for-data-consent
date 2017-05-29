@@ -9,11 +9,29 @@ rule Default {
     action: ALLOW
 }
 
-rule AccessAA {
+rule FullAccessAA {
     description: "Allow AA with Full Access all access to AA but not to itself"
     participant (p): "org.data.privacyNetwork.AuthorizedAgent"
     operation: ALL
     resource (r): "org.data.privacyNetwork.AuthorizedAgent"
-    condition: (p.fullAuthorizations.length > 0 && p.email != r.email)
+    condition: (p.fullAuthorizations.length > 0 && p.email !== r.email)
+    action: ALLOW
+}
+
+rule PartialAccessAA {
+    description: "Allow AA read access to itself"
+    participant (p): "org.data.privacyNetwork.AuthorizedAgent"
+    operation: READ
+    resource (r): "org.data.privacyNetwork.AuthorizedAgent"
+    condition: (p.email === r.email)
+    action: ALLOW
+}
+
+rule PushAccess {
+    description: "Allow AA with Push Access All access to AE"
+    participant (p): "org.data.privacyNetwork.AuthorizedAgent"
+    operation: ALL
+    resource (r): "org.data.privacyNetwork.AssociatedEntity"
+    condition: (p.pushAuthorizations > 0)
     action: ALLOW
 }
