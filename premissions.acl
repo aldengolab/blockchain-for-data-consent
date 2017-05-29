@@ -1,7 +1,7 @@
 /**
  * Sample access control list.
  */
-rule Default {
+rule DM_Global {
     description: "Allow DataManagers access to all resources"
     participant: "org.data.privacyNetwork.DataManager"
     operation: ALL
@@ -9,16 +9,16 @@ rule Default {
     action: ALLOW
 }
 
-rule FullAccessAA {
+rule AA_AA_Full {
     description: "Allow AA with Full Access all access to AA but not to itself"
     participant (p): "org.data.privacyNetwork.AuthorizedAgent"
-    operation: ALL
+    operation: READ, CREATE, UPDATE
     resource (r): "org.data.privacyNetwork.AuthorizedAgent"
     condition: (p.fullAuthorizations.length > 0 && p.email !== r.email)
     action: ALLOW
 }
 
-rule PartialAccessAA {
+rule AA_AA_Self {
     description: "Allow AA read access to itself"
     participant (p): "org.data.privacyNetwork.AuthorizedAgent"
     operation: READ
@@ -27,11 +27,29 @@ rule PartialAccessAA {
     action: ALLOW
 }
 
-rule PushAccess {
-    description: "Allow AA with Push Access All access to AE"
+rule AA_AE_Push {
+    description: "Allow AA with Push Access READ, CREATE, UPDATE access to AE"
     participant (p): "org.data.privacyNetwork.AuthorizedAgent"
-    operation: ALL
+    operation: READ, CREATE, UPDATE
     resource (r): "org.data.privacyNetwork.AssociatedEntity"
+    condition: (p.pushAuthorizations > 0)
+    action: ALLOW
+}
+
+rule AA_R_Push {
+    description: "Allow AA with Push Access READ, UPDATE access to Records"
+    participant (p): "org.data.privacyNetwork.AuthorizedAgent"
+    operation: READ, UPDATE
+    resource (r): "org.data.privacyNetwork.Record"
+    condition: (p.pushAuthorizations > 0)
+    action: ALLOW
+}
+
+rule AA_DU_Push {
+    description: "Allow AA with Push Access READ, UPDATE access to DU"
+    participant (p): "org.data.privacyNetwork.AuthorizedAgent"
+    operation: READ, UPDATE
+    resource (r): "org.data.privacyNetwork.DataUser"
     condition: (p.pushAuthorizations > 0)
     action: ALLOW
 }
