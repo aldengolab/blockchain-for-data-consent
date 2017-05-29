@@ -49,7 +49,7 @@ transaction Consent identified by consentId {
   o Boolean consentGranted
   --> DataUser user
   --> Record student
-  --> AuthorizedAgent associator
+  --> AuthorizedAgent agent
   --> AssociatedEntity guardian
   o DateTime agreementDate
   o DateTime expirationDate
