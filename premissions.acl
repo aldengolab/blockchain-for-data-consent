@@ -35,3 +35,30 @@ rule PushAccess {
     condition: (p.pushAuthorizations > 0)
     action: ALLOW
 }
+
+rule PushAccess {
+    description: "Allow AA with Push Access All access to AE"
+    participant (p): "org.data.privacyNetwork.AuthorizedAgent"
+    operation: ALL
+    resource (r): "org.data.privacyNetwork.AssociatedEntity"
+    condition: (p.pushAuthorizations > 0)
+    action: ALLOW
+}
+
+rule AE_AE_Access {
+    description: "Allow AE to read and update themselves"
+    participant (p): "org.data.privacyNetwork.AssociatedEntity"
+    operation: READ, UPDATE
+    resource (r): "org.data.privacyNetwork.AssociatedEntity"
+    condition: (p.email === r.email)
+    action: ALLOW
+}
+
+rule DU_AA_Access {
+    description: "Allow DU to access AA in their organization"
+    participant (p): "org.data.privacyNetwork.DataUser"
+    operation: UPDATE, CREATE, READ
+    resource (r): "org.data.privacyNetwork.AuthorizedAgent"
+    condition: (p.organization === r.organization)
+    action: ALLOW
+}
