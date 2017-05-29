@@ -10,6 +10,7 @@ asset Record identified by recordId {
   o String lastName
   --> DataManager authRoot
   o Association[] associations optional
+  o Consent[] consents optional
 }
 
 participant User identified by email {
@@ -39,18 +40,17 @@ participant DataUser extends User {
 transaction FullAuthority identified by fAuthId {
   o String fAuthId
   --> DataManager authRoot
-  --> AuthorizedAgent authAssociator
+  --> AuthorizedAgent agent
   o String authorizedAction
   o DateTime expirationDate
 }
 
 transaction Consent identified by consentId {
   o String consentId
-  o Boolean consentGranted
-  --> DataUser user
   --> Record student
-  --> AuthorizedAgent agent
+  --> AuthorizedAgent agent 
   --> AssociatedEntity guardian
+  --> DataUser user
   o DateTime agreementDate
   o DateTime expirationDate
   o String[] fields optional
@@ -75,11 +75,13 @@ transaction CreateAE identified by createAEId {
 transaction PushAuthority identified by pAuthId {
   o String pAuthId
   o DateTime expirationDate
+  o Boolean createParticipant
   o String authorizedAction
-  o String email
-  o String firstName
-  o String lastName
-  o String organization
+  o String email optional
+  o String firstName optional
+  o String lastName optional
+  o String organization optional
+  --> AuthorizedAgent agent optional
   --> AuthorizedAgent initiator optional
   --> DataManager authRoot optional
   --> DataUser userRoot optional
