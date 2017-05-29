@@ -21,7 +21,7 @@ participant User identified by email {
 }
 
 participant AssociatedEntity extends User {
-  --> Record[] students optional
+  o String[] students optional
 }
 
 participant DataManager extends User {
