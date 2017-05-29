@@ -9,12 +9,13 @@ rule DM_Global {
     action: ALLOW
 }
 
+
 rule AA_AA_Full {
-    description: "Allow AA with Full Access all access to AA but not to itself"
+    description: "Allow AA with Full Access all access to AA it created but not to itself"
     participant (p): "org.data.privacyNetwork.AuthorizedAgent"
     operation: READ, CREATE, UPDATE
     resource (r): "org.data.privacyNetwork.AuthorizedAgent"
-    condition: (p.fullAuthorizations.length > 0 && p.email !== r.email)
+    condition: (p.fullAuthorizations.length > 0 && p.email !== r.email && p.organization === r.organization)
     action: ALLOW
 }
 

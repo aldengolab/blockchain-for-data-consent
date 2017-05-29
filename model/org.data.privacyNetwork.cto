@@ -48,7 +48,7 @@ transaction FullAuthority identified by fAuthId {
 transaction Consent identified by consentId {
   o String consentId
   --> Record student
-  --> AuthorizedAgent agent 
+  --> AuthorizedAgent agent
   --> AssociatedEntity guardian
   --> DataUser user
   o DateTime agreementDate
