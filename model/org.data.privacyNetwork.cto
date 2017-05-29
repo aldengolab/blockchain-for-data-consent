@@ -49,8 +49,8 @@ transaction Consent identified by consentId {
   o Boolean consentGranted
   --> DataUser user
   --> Record student
-  --> AuthorizedAgent
-  --> AssociatedEntity
+  --> AuthorizedAgent associator
+  --> AssociatedEntity guardian
   o DateTime agreementDate
   o DateTime expirationDate
   o String[] fields optional
@@ -81,5 +81,6 @@ transaction PushAuthority identified by pAuthId {
   o String lastName
   o String organization
   --> AuthorizedAgent initiator optional
-  --> DataManager authRoot
+  --> DataManager authRoot optional
+  --> DataUser userRoot optional
 }
