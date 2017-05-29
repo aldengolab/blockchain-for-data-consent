@@ -16,7 +16,7 @@ participant User identified by email {
   o String email
   o String firstName
   o String lastName
-  o String organization
+  o String organization optional
 }
 
 participant AssociatedEntity extends User {
@@ -57,9 +57,12 @@ transaction Association identified by associationId {
   o String associationId
   o DateTime assignedDate
   o DateTime expirationDate optional
-  --> AssociatedEntity guardian
+  --> AssociatedEntity guardian optional
   --> Record student
   --> AuthorizedAssociator associator
+  o String email optional
+  o String firstName optional
+  o String lastName optional
 }
 
 transaction PushAuthority identified by pAuthId {
