@@ -1,88 +1,85 @@
 /**
- * A hyperledger for data privacy management.
+ * Blockchain for data privacy access control list.
  */
 
-namespace org.data.privacyNetwork
-
-asset Record identified by recordId {
-  o String recordId
-  o String firstName
-  o String lastName
-  --> DataManager authRoot
-  o Association[] associations optional
-  o Consent[] consents optional
+rule DM_Global {
+    description: "Allow DataManagers access to all resources"
+    participant: "org.data.privacyNetwork.DataManager"
+    operation: ALL
+    resource: "org.data.privacyNetwork"
+    action: ALLOW
 }
 
-participant User identified by email {
-  o String email
-  o String firstName
-  o String lastName
-  o String organization optional
+rule AA_AA_Full {
+    description: "Allow AA with Full Access all access to AA it created but not to itself"
+    participant (p): "org.data.privacyNetwork.AuthorizedAgent"
+    operation: READ, CREATE, UPDATE
+    resource (r): "org.data.privacyNetwork.AuthorizedAgent"
+    condition: (p.fullAuthorizations.length > 0 && p.email !== r.email && p.organization === r.organization)
+    action: ALLOW
 }
 
-participant AssociatedEntity extends User {
-  --> Record[] students optional
+rule AA_AA_Self {
+    description: "Allow AA read access to itself"
+    participant (p): "org.data.privacyNetwork.AuthorizedAgent"
+    operation: READ
+    resource (r): "org.data.privacyNetwork.AuthorizedAgent"
+    condition: (p.email === r.email)
+    action: ALLOW
 }
 
-participant DataManager extends User {
+rule AA_AE_Push {
+    description: "Allow AA with Push Access READ, CREATE, UPDATE access to AE"
+    participant (p): "org.data.privacyNetwork.AuthorizedAgent"
+    operation: READ, CREATE, UPDATE
+    resource (r): "org.data.privacyNetwork.AssociatedEntity"
+    condition: (p.pushAuthorizations > 0)
+    action: ALLOW
 }
 
-participant AuthorizedAgent extends User {
-  /* Can be one of two types based on authorization */
-  o FullAuthority[] fullAuthorizations optional
-  o PushAuthority[] pushAuthorizations optional
+rule AA_R_Push {
+    description: "Allow AA with Push Access READ, UPDATE access to Records"
+    participant (p): "org.data.privacyNetwork.AuthorizedAgent"
+    operation: READ, UPDATE
+    resource (r): "org.data.privacyNetwork.Record"
+    condition: (p.pushAuthorizations > 0)
+    action: ALLOW
 }
 
-participant DataUser extends User {
-  o Consent[] consents optional
+
+rule AE_AE_Access {
+    description: "Allow AE to read and update themselves"
+    participant (p): "org.data.privacyNetwork.AssociatedEntity"
+    operation: READ, UPDATE
+    resource (r): "org.data.privacyNetwork.AssociatedEntity"
+    condition: (p.email === r.email)
+    action: ALLOW
 }
 
-transaction FullAuthority identified by fAuthId {
-  o String fAuthId
-  --> DataManager authRoot
-  --> AuthorizedAgent agent
-  o String authorizedAction
-  o DateTime expirationDate
+rule DU_AA_Access {
+    description: "Allow DU to access AA in their organization"
+    participant (p): "org.data.privacyNetwork.DataUser"
+    operation: UPDATE, CREATE, READ
+    resource (r): "org.data.privacyNetwork.AuthorizedAgent"
+    condition: (p.organization === r.organization)
+    action: ALLOW
+
 }
 
-transaction Consent identified by consentId {
-  o String consentId
-  --> Record student
-  --> AuthorizedAgent agent
-  --> AssociatedEntity guardian
-  --> DataUser user
-  o DateTime agreementDate
-  o DateTime expirationDate
-  o String[] fields optional
+rule AA_DU_Push {
+    description: "Allow AA with Push Access READ, UPDATE access to DU"
+    participant (p): "org.data.privacyNetwork.AuthorizedAgent"
+    operation: READ, UPDATE
+    resource (r): "org.data.privacyNetwork.DataUser"
+    condition: (p.pushAuthorizations > 0)
+    action: ALLOW
 }
 
-transaction Association identified by associationId {
-  o String associationId
-  o DateTime assignedDate
-  o DateTime expirationDate optional
-  --> AssociatedEntity guardian
-  --> Record student
-  --> AuthorizedAgent associator
-}
-
-transaction CreateAE identified by createAEId {
-  o String createAEId
-  o String email
-  o String firstName
-  o String lastName
-}
-
-transaction PushAuthority identified by pAuthId {
-  o String pAuthId
-  o DateTime expirationDate
-  o Boolean createParticipant
-  o String authorizedAction
-  o String email optional
-  o String firstName optional
-  o String lastName optional
-  o String organization optional
-  --> AuthorizedAgent agent optional
-  --> AuthorizedAgent initiator optional
-  --> DataManager authRoot optional
-  --> DataUser userRoot optional
+rule AE_R_Associate {
+    description: "Allow AE READ access to Record if Associated"
+    participant (p): "org.data.privacyNetwork.AssociatedEntity"
+    operation: READ
+    resource (r): "org.data.privacyNetwork.Record"
+    condition: (p.students.includes(r))
+    action: ALLOW
 }

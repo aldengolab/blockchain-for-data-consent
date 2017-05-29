@@ -63,6 +63,7 @@ rule DU_AA_Access {
     resource (r): "org.data.privacyNetwork.AuthorizedAgent"
     condition: (p.organization === r.organization)
     action: ALLOW
+
 }
 
 rule AA_DU_Push {
@@ -71,5 +72,14 @@ rule AA_DU_Push {
     operation: READ, UPDATE
     resource (r): "org.data.privacyNetwork.DataUser"
     condition: (p.pushAuthorizations > 0)
+    action: ALLOW
+}
+
+rule AE_R_Associate {
+    description: "Allow AE READ access to Record if Associated"
+    participant (p): "org.data.privacyNetwork.AssociatedEntity"
+    operation: READ
+    resource (r): "org.data.privacyNetwork.Record"
+    condition: (p.students.includes(r.recordId))
     action: ALLOW
 }
